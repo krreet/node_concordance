@@ -9,9 +9,10 @@ module.exports = {
   // An object that does classification with us of words
   Concordance: class {
 
-    constructor() {
+    constructor(stopWords) {
       this.dict = {};
       this.keys = [];
+      this.stopWords = stopWords;
     }
 
     // Splitting up the text
@@ -22,12 +23,32 @@ module.exports = {
 
     // A function to validate a toke
     validate(token) {
-      return /\w{2,}/.test(token);
+   
+      return /\w{2,}/.test(token) && (! (/\d+/.test(token))  &&  !(this.stopWords.indexOf(token) > -1) ) ;
+
+    
     }
 
+
+
+
+    
     // Process new text
     process(data) {
+
+//data here is json 
+// console.log(data.xlData);
+
+
+// var json = JSON.stringify(data.xlData);
+// //use fs to write the file to disk
+
+// var fs = require('fs');
+// fs.writeFileSync('myjsonfile.json', json, 'utf8');
+
+
       var tokens = this.split(data);
+//console.log(tokens.length);
       // For every token
       for (var i = 0; i < tokens.length; i++) {
         // Lowercase everything to ignore case
