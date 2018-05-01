@@ -23,8 +23,10 @@ function greet() {
     // removeClass('count');
     //gotData(result);
 
-  });
+   
 
+  });
+  location.reload();
 }
 
 

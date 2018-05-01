@@ -38,9 +38,10 @@ function greet() {
   httpPost(url, 'json', postData, function (result) {
     // removeClass('count');
     //gotData(result);
+    
 
   });
-
+  location.reload();
 }
 
 function sendRowNum() {
@@ -53,7 +54,7 @@ function sendRowNum() {
     // earthquake data used in the visualization.
 
   });
-
+  location.reload();
 }
 
 
