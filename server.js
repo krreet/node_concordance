@@ -1,13 +1,16 @@
-// A2Z F17
-// Daniel Shiffman
-// http://shiffman.net/a2z
-// https://github.com/shiffman/A2Z-F17
+
+// https://github.com/kreeet
 
 // Using express: http://expressjs.com/
 
-
-
+var tfidf;
+var readyForLda = false;
+let ldaOutput = '';
+var filestfidf = [];
+var rowNum = 0;
 var express = require('express');
+
+var lda = require('./lda');
 // Create the app
 var app = express();
 
@@ -43,6 +46,8 @@ var files = fs.readdirSync('excel');
 
 // Pulling our concordance object from a separate "module" - concordance.js
 var concordance = require('./concordance');
+var concordance_tfidf = require('./concordance_tfidf');
+var sentiment = require('./sentiment');
 
 var XLSX = require('xlsx')
 var workbook = XLSX.readFile('excel/CC Product.xlsx');
@@ -72,19 +77,39 @@ var datalength = data.xlData.length;
 // Read the file as utf8 and process the data
 // Notice how this is in a loop to parse all files
 
-function start(){
-  wordcounts  = new concordance.Concordance(stopWords);
+function start(type){
+ 
+
+  if(type == 'normal'){
+    wordcounts  = new concordance.Concordance(stopWords);
  for (var i = 0; i  < data.xlData.length; i++) {
   // Note the callback is processFile
 
-  processFile(data.xlData[i]['Consumer complaint narrative']);
+ processFile(data.xlData[i]['Consumer complaint narrative'], type);
+ }}
+ else{
+
+
+  for (var i = 0; i  < data.xlData.length; i++) {
+    // Note the callback is processFile
+//console.log(data.xlData[i]['Consumer complaint narrative']);
+    //var idata ={ data : data.xlData[i]['Consumer complaint narrative'] };
+    //files.data = [];
+    filestfidf.push(data.xlData[i]['Consumer complaint narrative']);
+ 
+
+ }
+//console.log(files);
+ processFile(data.xlData[rowNum]['Consumer complaint narrative'], type);
+ 
+  // tfidf_allwords[i] = data.xlData[i]['Consumer complaint narrative'];
   // d
   //fs.readFile('austen/'+files[i], 'utf8', processFile);
 }
 }
 
 
-start();
+start('normal');
 // How many files have been read?
 // This helps us know when we are done
 //var fileCount = 0;
@@ -93,15 +118,32 @@ start();
 //var wordcounts = new concordance.Concordance();
 //console.log(wordcounts);
 // This callback is triggered for every file
-function processFile(data) {
+function processFile(datathis , type) {
   // If there's a problem
   // if (err) {
   //   console.log('ooops, there was an error reading this file');
   //   throw err;
   // }
+if(type == 'tfidf'){
+  tfidf = new concordance_tfidf.TFIDF(stopWords);
 
+  // Process this data into the tfidf object
+ // console.log(datathis);
+  tfidf.termFreq(datathis);
+  // Now we need to read all the rest of the files
+  // for document occurences
+
+  for (var i = 0; i < filestfidf.length; i++) {
+    
+    tfidf.docFreq(filestfidf[i]);
+  }
+  tfidf.finish(filestfidf.length);
+  tfidf.sortByScore();
+  readyForLda = true;
+
+}else if(type == 'normal') {
   // Send the data into the concordance
-  wordcounts.process(data);
+  wordcounts.process(datathis);
 
   // This file finished
   fileCount++;
@@ -109,19 +151,70 @@ function processFile(data) {
   // Is this the last file?
   if (fileCount >= datalength) {
     wordcounts.sortByCount();
+
+  
   }
 }
+}
 
+function getLda (){
+
+if(readyForLda){
+
+
+if(ldaOutput){
+ 
+return ldaOutput;
+}else{
+
+ //ldaOutput = lda(filestfidf[1], 2,4);
+ getldaasync();
+async function getldaasync(){
+
+  console.log('calling');
+
+  var value = await lda(filestfidf.slice(0,100).join('\n'), 2,4);
+console.log(value);
+
+
+}
+
+console.log('called');
+ //lda(filestfidf.slice(0,1000).join('\n'), 2,4).then(function(value) {
+  //console.log(value);
+//     // expected output: Array [1, 2, 3]
+//   });
+
+
+
+
+ 
+}
+
+}else{
+
+  return "lda not ready";
+}
+
+}
 
 // Route for sending all the concordance data
 app.get('/all', showAll);
 
+// Route for sending all the concordance data
+app.get('/tfidf', showTFIDF);
 
+// Route for sending all the concordance data
+app.get('/lda', showLDA);
+
+
+// Route for sending all the concordance data
+app.get('/sentiment', showSNT);
 app.post('/allstopWords', function (req, res) {
 //  console.log(req.body);
   stopWords = req.body.stopWords.split(',');
 //console.log(stopWords);
-  start();
+  start('normal');
 
  // showAll(req, res);
 })
@@ -131,4 +224,29 @@ function showAll(req, res) {
   // Send the entire concordance
   // express automatically renders objects as JSON
   res.send(wordcounts);
+}
+
+
+function showSNT(req, res) {
+  // Send the entire concordance
+  // express automatically renders objects as JSON
+  //console.log('getting sentiment');
+  res.send(sentiment(data));
+}
+function showLDA(req, res) {
+  // Send the entire concordance
+  // express automatically renders objects as JSON
+  //console.log(readyForLda);
+  res.send(getLda());
+}
+
+
+function showTFIDF(req, res) {
+  // Send the entire concordance
+  // express automatically renders objects as JSON
+if(req.query.rowNum){
+  rowNum = req.query.rowNum;
+}
+  start('tfidf');
+  res.send(tfidf);
 }
