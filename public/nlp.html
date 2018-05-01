@@ -1,0 +1,209 @@
+<!Doctype>
+
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <div data-radium="true" style="flex: 1 1 0%; width: 100%; text-align: left; flex-wrap: wrap; display: flex; justify-content: center;">
+        <div data-radium="true" style="display: flex; flex-direction: column;">
+            <div data-radium="true" style="font-size: 14px; margin-top: 8px; color: lightgrey;">grab the:</div>
+            <div id="topics" data-radium="true" style="padding: 10px; font-size: 15px; color: steelblue; border-radius: 2px; cursor: pointer; border: 1px solid rgb(237, 237, 237);">Topics</div>
+            <div id="nouns" data-radium="true" style="padding: 10px; font-size: 15px; color: steelblue; border-radius: 2px; cursor: pointer; border: 1px solid rgb(237, 237, 237);">Noun-phrases</div>
+            <div id="dates" data-radium="true" style="padding: 10px; font-size: 15px; color: steelblue; border-radius: 2px; cursor: pointer; border: 1px solid rgb(237, 237, 237);">Dates</div>
+            <div id="people" data-radium="true" style="padding: 10px; font-size: 15px; color: steelblue; border-radius: 2px; cursor: pointer; border: 1px solid rgb(237, 237, 237);">People</div>
+            <div id="verbs" data-radium="true" style="padding: 10px; font-size: 15px; color: steelblue; border-radius: 2px; cursor: pointer; border: 1px solid rgb(237, 237, 237);">Verb-phrases</div>
+            <div id="values" data-radium="true" style="padding: 10px; font-size: 15px; color: steelblue; border-radius: 2px; cursor: pointer; border: 1px solid rgb(237, 237, 237);">Values</div>
+        </div>
+        <div data-radium="true" style="width: 500px; min-width: 400px; max-width: 700px;">
+            Row Num:
+            <input type="number" name="rowNum" style="display: inline-block" id="rowNum">
+            <input type="submit" value="Submit" style="display: inline-block" id="loadRow">
+            <textarea id="result" data-radium="true" style="width: 99%; max-width: 700px; min-width: 200px; min-height: 200px; font-size: 12px; border-radius: 8px; color: rgb(201, 203, 216);">
+        </textarea>
+            <div data-radium="true" style="font-size: 18px; color: palevioletred; padding: 6px; border: 1px solid palevioletred; border-radius: 5px;">
+                <!-- react-text: 278 -->Enter 
+                <!-- /react-text -->
+                <i data-radium="true" style="color: rgb(244, 105, 121);">some text</i>
+                <!-- react-text: 280 -->or enter 
+                <!-- /react-text -->
+                <i data-radium="true" style="color: rgb(244, 105, 121);">row num (0, row length)</i>
+                <!-- react-text: 282 -->then click
+                <!-- /react-text -->
+                <i data-radium="true" style="color: rgb(244, 105, 121);"></i>
+                <!-- react-text: 284 -->buttons on left
+                <!-- /react-text -->
+            </div>
+        </div>
+        <div data-radium="true" style="min-height: 50px; width: auto; max-height: 245px; padding-top: 10px; margin-top: 25px; overflow: scroll; border: 1px solid lightgrey; font-family: helvetica; font-size: 12px; border-radius: 8px; color: palevioletred;">
+            <table id="reservations" data-radium="true">
+                <thead>
+                    <tr>
+                        <th>Entity</th>
+                        <th>Count</th>
+                        <th>Percent</th>
+                    </tr>
+                </thead>
+
+
+                <tbody data-radium="true">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <nav style="
+    text-align:  center;
+    margin: 50px;
+">
+      
+            <a href="/">HOME</a> |
+            <a href="/">Word counting</a> |
+            <a href="/wordcloud.html">WordCloud</a> |
+            <a href="/tfidf.html">TFIDF</a> |
+            <a href="/tfidfcloud.html">TFIDFCLOUD</a> |
+            <a href="/sentiment.html">Sentiment</a> |
+            <a href="/nlp.html">NLP</a>
+          </nav>
+
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="compromise.js"></script>
+<script>
+
+
+
+    function injectTable(data) {
+
+        $('#reservations tbody').empty();
+        console.log(data);
+        var tbody = $('#reservations tbody'),
+            props = ["normal", "count", "percent"];
+        $.each(data, function (i, data) {
+            var tr = $('<tr>');
+            $.each(props, function (i, prop) {
+                $('<td>').html(data[prop]).appendTo(tr);
+            });
+            tbody.append(tr);
+        });
+
+
+
+    }
+
+
+
+    $("#topics").on("click", function () {
+
+
+        var text = $.trim($("#result").val());
+        if (text) {
+            text = nlp(text).topics().slice(0, 50).out('frequency')
+            injectTable(text);
+            $(this).siblings().css('color', 'steelblue');  $(this).css('color', 'palevioletred');
+        }
+        else
+            alert('enter something in text box then click');
+
+    });
+
+    $("#nouns").on("click", function () {
+
+        var text = $.trim($("#result").val());
+        if (text) {
+            text = nlp(text).nouns().slice(0, 50).out('frequency')
+            injectTable(text);
+            $(this).siblings().css('color', 'steelblue');  $(this).css('color', 'palevioletred');
+        }
+        else
+            alert('enter something in text box then click');
+
+
+    });
+    $("#dates").on("click", function () {
+
+        var text = $.trim($("#result").val());
+        if (text) {
+
+            text = nlp(text).dates().slice(0, 50).out('frequency');
+            injectTable(text);
+            $(this).siblings().css('color', 'steelblue');  $(this).css('color', 'palevioletred');
+        }
+        else
+            alert('enter something in text box then click');
+
+
+    });
+    $("#people").on("click", function () {
+
+        var text = $.trim($("#result").val());
+        if (text) {
+            text = nlp(text).people().slice(0, 50).out('frequency')
+            injectTable(text);
+            $(this).siblings().css('color', 'steelblue');  $(this).css('color', 'palevioletred');
+        }
+        else
+            alert('enter something in text box then click');
+
+
+    });
+    $("#verbs").on("click", function () {
+
+        var text = $.trim($("#result").val());
+        if (text) {
+            text = nlp(text).verbs().slice(0, 50).out('frequency')
+            injectTable(text);
+            $(this).siblings().css('color', 'steelblue');  $(this).css('color', 'palevioletred');
+        }
+        else
+            alert('enter something in text box then click');
+
+
+    });
+    $("#values").on("click", function () {
+
+var text = $.trim($("#result").val());
+        if (text) {
+            text = nlp(text).values().slice(0, 50).out('frequency')
+            injectTable(text);
+            $(this).siblings().css('color', 'steelblue'); $(this).css('color', 'palevioletred');
+        }
+        else
+            alert('enter something in text box then click');
+
+
+    });
+    $("#loadRow").click(function () {
+        //make an ajax call with rownum
+        var rowNum = $('#rowNum').val();
+
+        if (rowNum) {
+            var jqxhr = $.get("/gettext/" + rowNum, function () {
+                // alert( "success" );
+            })
+                .done(function (data) {
+                    //alert( "second success" );
+                    $('#result').val(data);
+
+                })
+                .fail(function () {
+                    alert("error");
+                })
+                .always(function () {
+                    // alert( "finished" );
+                });
+
+
+        } else {
+
+            alert("enter something in the value");
+        }
+    });
+
+</script>
+
+</html>

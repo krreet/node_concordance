@@ -1,116 +1,130 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>UseCase</title>
+  <title>UseCase</title>
 
-	<script src="libraries/p5.js"></script>
-	<script src="libraries/p5.dom.js"></script>
-	<script src="libraries/p5.sound.js"></script>
-	<script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
+  <script src="libraries/p5.js"></script>
+  <script src="libraries/p5.dom.js"></script>
+  <script src="libraries/p5.sound.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
 
-<script src="d3.js"></script>
-<script src="d3.layout.cloud.js"></script>
-<script src="d3.wordcloud.js"></script>
-<script src="sketch.1.js"></script>
-	<style>
-		
-		
+  <script src="d3.js"></script>
+  <script src="d3.layout.cloud.js"></script>
+  <script src="d3.wordcloud.js"></script>
+  <script src="sketch.1.js"></script>
+  <style>
+    @media (min-width: 980px) {
+      body {
+        padding-top: 60px;
+      }
+    }
 
-		
-  @media (min-width: 980px) {
-    body { padding-top: 60px; }
-  }
+    *[hidden] {
+      display: none;
+    }
 
-  *[hidden] {
-    display: none;
-  }
+    #canvas-container {
+      overflow-x: auto;
+      overflow-y: visible;
+      position: relative;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
 
-  #canvas-container {
-    overflow-x: auto;
-    overflow-y: visible;
-    position: relative;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .canvas {
-    display: block;
-    position: relative;
-    overflow: hidden;
-  }
+    .canvas {
+      display: block;
+      position: relative;
+      overflow: hidden;
+    }
 
-  .canvas.hide {
-    display: none;
-  }
+    .canvas.hide {
+      display: none;
+    }
 
-  #html-canvas > span {
-    transition: text-shadow 1s ease, opacity 1s ease;
-    -webkit-transition: text-shadow 1s ease, opacity 1s ease;
-    -ms-transition: text-shadow 1s ease, opacity 1s ease;
-  }
+    #html-canvas>span {
+      transition: text-shadow 1s ease, opacity 1s ease;
+      -webkit-transition: text-shadow 1s ease, opacity 1s ease;
+      -ms-transition: text-shadow 1s ease, opacity 1s ease;
+    }
 
-  #html-canvas > span:hover {
-    text-shadow: 0 0 10px, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
-    opacity: 0.5;
-  }
+    #html-canvas>span:hover {
+      text-shadow: 0 0 10px, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
+      opacity: 0.5;
+    }
 
-  #box {
-    pointer-events: none;
-    position: absolute;
-    box-shadow: 0 0 200px 200px rgba(255, 255, 255, 0.5);
-    border-radius: 50px;
-    cursor: pointer;
-  }
+    #box {
+      pointer-events: none;
+      position: absolute;
+      box-shadow: 0 0 200px 200px rgba(255, 255, 255, 0.5);
+      border-radius: 50px;
+      cursor: pointer;
+    }
 
-  textarea {
-    height: 20em;
-  }
-  #config-option {
-    font-family: monospace;
-  }
-  select { width: 100%; }
+    textarea {
+      height: 20em;
+    }
 
-  #loading {
-    animation: blink 2s infinite;
-    -webkit-animation: blink 2s infinite;
-  }
-  @-webkit-keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-  @keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
-  }
+    #config-option {
+      font-family: monospace;
+    }
 
-  
-	</style>
+    select {
+      width: 100%;
+    }
+
+    #loading {
+      animation: blink 2s infinite;
+      -webkit-animation: blink 2s infinite;
+    }
+
+    @-webkit-keyframes blink {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <nav>
-      
-        <a href="/">HOME</a> |
-        <a href="/">Word counting</a> |
-        <a href="/wordcloud.html">WordCloud</a> |
-        <a href="/tfidf.html">TFIDF</a> |
-        <a href="/tfidfcloud.html">TFIDFCLOUD</a> |
-        <a href="/sentiment.html">Sentiment</a> |
-       
-      </nav>
+  <nav>
 
-      <p> This visualisation is done only on top 1000 words by count. to edit the stop words  click <span><a href="/">Word counting</a> </span> and come back here  </p>
-		<div id='wordcloud'>
+    <a href="/">HOME</a> |
+    <a href="/">Word counting</a> |
+    <a href="/wordcloud.html">WordCloud</a> |
+    <a href="/tfidf.html">TFIDF</a> |
+    <a href="/tfidfcloud.html">TFIDFCLOUD</a> |
+    <a href="/sentiment.html">Sentiment</a> |
+    <a href="/nlp.html">NLP</a>
+  </nav>
 
-        
+  <p> This visualisation is done only on top 1000 words by count. to edit the stop words click
+    <span>
+      <a href="/">Word counting</a>
+    </span> and come back here </p>
+  <div id='wordcloud'>
 
-    </div>
-	
+
+
+  </div>
+
 </body>
+
 </html>

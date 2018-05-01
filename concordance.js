@@ -1,7 +1,7 @@
-// A2Z F17
-// Daniel Shiffman
-// http://shiffman.net/a2z
-// https://github.com/shiffman/A2Z-F17
+// task
+// Reetesh Kumar
+// http://reet.herokuapp.com
+// https://github.com/krreet/node_concordance
 
 // This is a way of making something available to another JS file in node
 module.exports = {
@@ -23,32 +23,32 @@ module.exports = {
 
     // A function to validate a toke
     validate(token) {
-   
-      return /\w{2,}/.test(token) && (! (/\d+/.test(token))  &&  !(this.stopWords.indexOf(token) > -1) ) ;
 
-    
+      return /\w{2,}/.test(token) && (!(/\d+/.test(token)) && !(this.stopWords.indexOf(token) > -1));
+
+
     }
 
 
 
 
-    
+
     // Process new text
     process(data) {
 
-//data here is json 
-// console.log(data.xlData);
+      //data here is json 
+      // console.log(data.xlData);
 
 
-// var json = JSON.stringify(data.xlData);
-// //use fs to write the file to disk
+      // var json = JSON.stringify(data.xlData);
+      // //use fs to write the file to disk
 
-// var fs = require('fs');
-// fs.writeFileSync('myjsonfile.json', json, 'utf8');
+      // var fs = require('fs');
+      // fs.writeFileSync('myjsonfile.json', json, 'utf8');
 
 
       var tokens = this.split(data);
-//console.log(tokens.length);
+      //console.log(tokens.length);
       // For every token
       for (var i = 0; i < tokens.length; i++) {
         // Lowercase everything to ignore case

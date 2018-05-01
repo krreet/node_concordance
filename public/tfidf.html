@@ -1,65 +1,69 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Concordance</title>
-    <script src="libraries/p5.js" type="text/javascript"></script>
 
-    <script src="libraries/p5.dom.js" type="text/javascript"></script>
-    <script src="libraries/p5.sound.js" type="text/javascript"></script>
+<head>
+  <meta charset="UTF-8">
+  <title>Concordance</title>
+  <script src="libraries/p5.js" type="text/javascript"></script>
 
-    <script src="sketch.2.js" type="text/javascript"></script>
+  <script src="libraries/p5.dom.js" type="text/javascript"></script>
+  <script src="libraries/p5.sound.js" type="text/javascript"></script>
 
-    <style>
-      body {
-        padding: 20px;
-        line-height: 48px;
-      }
+  <script src="sketch.2.js" type="text/javascript"></script>
 
-      .count {
-        background-color: #CCC;
-        margin: 4px;
-        padding: 12px;
-      }
-textarea {
+  <style>
+    body {
+      padding: 20px;
+      line-height: 48px;
+    }
 
-width: 1000px;
-height : 100px;
-}
+    .count {
+      background-color: #CCC;
+      margin: 4px;
+      padding: 12px;
+    }
 
-    </style>
+    textarea {
 
-  </head>
-  <body>
-    <h1>TFIDF</h1>
-    <span> This visualisation is done only for the first row if not edited  to edit the row num  fill the box and submit and reload the page </span>
-    <nav>
-      
-        <a href="/">HOME</a> |
-        <a href="/">Word counting</a> |
-        <a href="/wordcloud.html">WordCloud</a> |
-        <a href="/tfidf.html">TFIDF</a> |
-        <a href="/tfidfcloud.html">TFIDFCLOUD</a> |
-        <a href="/sentiment.html">Sentiment</a> |
-       
-      </nav>
-  
-     
-      <textarea id="stopWords" name="stopWords">... or paste a base64-encoding here</textarea>
-      
+      width: 1000px;
+      height: 100px;
+    }
+  </style>
 
-    <p id = "results">
+</head>
+
+<body>
+  <h1>TFIDF</h1>
+  <span> This visualisation is done only for the first row if not edited to edit the row num fill the box and submit and reload
+    the page </span>
+  <nav>
+
+    <a href="/">HOME</a> |
+    <a href="/">Word counting</a> |
+    <a href="/wordcloud.html">WordCloud</a> |
+    <a href="/tfidf.html">TFIDF</a> |
+    <a href="/tfidfcloud.html">TFIDFCLOUD</a> |
+    <a href="/sentiment.html">Sentiment</a> |
+    <a href="/nlp.html">NLP</a>
+  </nav>
 
 
+  <textarea id="stopWords" name="stopWords">... or paste a base64-encoding here</textarea>
 
 
-    </p>
-  </body>
+  <p id="results">
 
-  <script>
-  
-  var stopwords = [ "a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "could", "did", "do", "does", "doing", "down", "during", "each", "few", "for", "from", "further", "had", "has", "have", "having", "he", "he'd", "he'll", "he's", "her", "here", "here's", "hers", "herself", "him", "himself", "his", "how", "how's", "i", "i'd", "i'll", "i'm", "i've", "if", "in", "into", "is", "it", "it's", "its", "itself", "let's", "me", "more", "most", "my", "myself", "nor", "of", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "she", "she'd", "she'll", "she's", "should", "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves", "then", "there", "there's", "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "we", "we'd", "we'll", "we're", "we've", "were", "what", "what's", "when", "when's", "where", "where's", "which", "while", "who", "who's", "whom", "why", "why's", "with", "would", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves" ];
+
+
+
+  </p>
+</body>
+
+<script>
+
+  var stopwords = ["a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "could", "did", "do", "does", "doing", "down", "during", "each", "few", "for", "from", "further", "had", "has", "have", "having", "he", "he'd", "he'll", "he's", "her", "here", "here's", "hers", "herself", "him", "himself", "his", "how", "how's", "i", "i'd", "i'll", "i'm", "i've", "if", "in", "into", "is", "it", "it's", "its", "itself", "let's", "me", "more", "most", "my", "myself", "nor", "of", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "she", "she'd", "she'll", "she's", "should", "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves", "then", "there", "there's", "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "we", "we'd", "we'll", "we're", "we've", "were", "what", "what's", "when", "when's", "where", "where's", "which", "while", "who", "who's", "whom", "why", "why's", "with", "would", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves"];
   var textarea = document.getElementById("stopWords");
-textarea.value = stopwords.join(",");
-  </script>
+  textarea.value = stopwords.join(",");
+</script>
+
 </html>

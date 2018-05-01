@@ -1,176 +1,176 @@
 <html>
-  <head>
-      <script src='https://cdn.jsdelivr.net/lodash/4.17.2/lodash.min.js'></script>
-      <script src ='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js'></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="//www.google.com/jsapi"></script>
 
-  
-    
-    <script type="text/javascript">
-    google.charts.load('current', {'packages':['corechart']});
-     // google.charts.setOnLoadCallback(drawVisualization);
-var tableArray = [];
-var gdata = [];
-var jsonData = $.ajax({
-        url: '/sentiment',
-        type: 'GET',
-        dataType: 'json',
-        error: function (err) {
-            alert("Error : "+err.statusText);
-        },
-        success: function (data) {
-           // console.log(data);
-            //drawChart(data.xlData);
-            //return data;
-            preprocessing(data.xlData)
+<head>
+  <script src='https://cdn.jsdelivr.net/lodash/4.17.2/lodash.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js'></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="//www.google.com/jsapi"></script>
 
 
 
-
-        }
- });
-
-
-//console.log(jsonData);
-function preprocessing(data){
-
-var grouped = _.mapValues(_.groupBy(data, 'Date received'),
-                          clist => clist.map(data => _.pick(data, 'Sentiment')));
-
-//console.log(grouped);
-
-// grouped.sort(function (left, right) {
-//     return moment.utc(left.timeStamp).diff(moment.utc(right.timeStamp))
-// });
-
-//console.log(JSON.stringify(unordered));
-// → '{"b":"foo","c":"bar","a":"baz"}'
-
-const ordered = {};
-Object.keys(grouped).sort(function (left, right) {
-    return moment.utc(left).diff(moment.utc(right))
-}).forEach(function(key) {
-  ordered[key] = grouped[key];
-});
-
-//console.log(JSON.stringify(ordered));
-var maximum = Object.keys(ordered)[0].length;
-for( var i=1 ; i< Object.keys(ordered).length ; i++){
-
-
-  if(Object.keys(ordered)[i].length > maximum)
- {
-   maximum = Object.keys(ordered)[i].length
- }
-
-}
-
-
-console.log(maximum);
-createGdata();
-
-function createGdata(){
-
-
-gdata[0] = ['Date', 'Sentiment1', 'Sentiment2','Sentiment3','Sentiment4','Sentiment5','Sentiment6','Sentiment7','AVG', ]
-
-
-  for( var i=0 ; i< Object.keys(ordered).length  ; i++){
-var ing = [];
-var date = Object.keys(ordered)[i];
-var s1 , s2 , s3 ,s4 ,s5 ,s6 ,s7 ,avg = null;
+  <script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    // google.charts.setOnLoadCallback(drawVisualization);
+    var tableArray = [];
+    var gdata = [];
+    var jsonData = $.ajax({
+      url: '/sentiment',
+      type: 'GET',
+      dataType: 'json',
+      error: function (err) {
+        alert("Error : " + err.statusText);
+      },
+      success: function (data) {
+        // console.log(data);
+        //drawChart(data.xlData);
+        //return data;
+        preprocessing(data.xlData)
 
 
 
 
-let y = null;
-var s1 = gets(ordered , i , 0);
-
- 
-var s2 = gets(ordered , i , 1);
-
-
-var s3 = gets(ordered , i , 2);
-
-var s4 = gets(ordered , i , 3);
-var s5 = gets(ordered , i , 4);
-
-var s6 = gets(ordered , i , 5);
-
-var s7 = gets(ordered , i , 6);
-
-var s8 = gets(ordered , i , 7);
-
-function gets(obj, i , current) {
-try{
-
-return obj[Object.keys(obj)[i]][current].Sentiment;
-
-}catch(err){
-
-return null;
-}
-}
-var avg = (s1+s2+s3+s4+s5+s6+s7+s8)/7;
-ing = [ date, s1 , s2 ,s3 ,s4 , s5 ,s6 , s7 ,avg ];
-//console.log(ing);
-gdata.push(ing)
-  }
-
-//console.log(gdata);
-
-drawVisualization(gdata);
-
-}
-
-}
-
-
-function drawChart(jsonData) {
-  // var jsonData = [
-  //   {"LineName":"L1","Car":23,"Bus":0,"Motorcycle":0,"Person":0,"Others":0},
-  //   {"LineName":"L2","Car":0,"Bus":0,"Motorcycle":6,"Person":0,"Others":0},
-  //   {"LineName":"L3","Car":10,"Bus":20,"Motorcycle":36,"Person":13,"Others":0}
-  // ];
-//console.log(jsonData);
-  var gglData = [];
-  if (jsonData.length > 0) {
-    // load column headings
-    var colHead = [];
-    Object.keys(jsonData[0]).forEach(function (key) {
-
-
-    
-      colHead.push(key);
+      }
     });
-    gglData.push(colHead);
 
-    // load data rows
-    jsonData.forEach(function (row) {
-      var gglRow = [];
-      Object.keys(row).forEach(function (key) {
-        gglRow.push(row[key]);
+
+    //console.log(jsonData);
+    function preprocessing(data) {
+
+      var grouped = _.mapValues(_.groupBy(data, 'Date received'),
+        clist => clist.map(data => _.pick(data, 'Sentiment')));
+
+      //console.log(grouped);
+
+      // grouped.sort(function (left, right) {
+      //     return moment.utc(left.timeStamp).diff(moment.utc(right.timeStamp))
+      // });
+
+      //console.log(JSON.stringify(unordered));
+      // → '{"b":"foo","c":"bar","a":"baz"}'
+
+      const ordered = {};
+      Object.keys(grouped).sort(function (left, right) {
+        return moment.utc(left).diff(moment.utc(right))
+      }).forEach(function (key) {
+        ordered[key] = grouped[key];
       });
-      gglData.push(gglRow);
-    });
-  }
+
+      //console.log(JSON.stringify(ordered));
+      var maximum = Object.keys(ordered)[0].length;
+      for (var i = 1; i < Object.keys(ordered).length; i++) {
 
 
-//drawSeriesChart(gglData);
- //  arrayToDataTable is a static method, "new" keyword not needed
+        if (Object.keys(ordered)[i].length > maximum) {
+          maximum = Object.keys(ordered)[i].length
+        }
 
- console.log(gglData);
-   var data = google.visualization.arrayToDataTable(gglData);
-   var table = new google.visualization.Table(document.getElementById('table_div'));
-   table.draw(data);
-}
+      }
+
+
+      console.log(maximum);
+      createGdata();
+
+      function createGdata() {
+
+
+        gdata[0] = ['Date', 'Sentiment1', 'Sentiment2', 'Sentiment3', 'Sentiment4', 'Sentiment5', 'Sentiment6', 'Sentiment7', 'AVG',]
+
+
+        for (var i = 0; i < Object.keys(ordered).length; i++) {
+          var ing = [];
+          var date = Object.keys(ordered)[i];
+          var s1, s2, s3, s4, s5, s6, s7, avg = null;
+
+
+
+
+          let y = null;
+          var s1 = gets(ordered, i, 0);
+
+
+          var s2 = gets(ordered, i, 1);
+
+
+          var s3 = gets(ordered, i, 2);
+
+          var s4 = gets(ordered, i, 3);
+          var s5 = gets(ordered, i, 4);
+
+          var s6 = gets(ordered, i, 5);
+
+          var s7 = gets(ordered, i, 6);
+
+          var s8 = gets(ordered, i, 7);
+
+          function gets(obj, i, current) {
+            try {
+
+              return obj[Object.keys(obj)[i]][current].Sentiment;
+
+            } catch (err) {
+
+              return null;
+            }
+          }
+          var avg = (s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8) / 7;
+          ing = [date, s1, s2, s3, s4, s5, s6, s7, avg];
+          //console.log(ing);
+          gdata.push(ing)
+        }
+
+        //console.log(gdata);
+
+        drawVisualization(gdata);
+
+      }
+
+    }
+
+
+    function drawChart(jsonData) {
+      // var jsonData = [
+      //   {"LineName":"L1","Car":23,"Bus":0,"Motorcycle":0,"Person":0,"Others":0},
+      //   {"LineName":"L2","Car":0,"Bus":0,"Motorcycle":6,"Person":0,"Others":0},
+      //   {"LineName":"L3","Car":10,"Bus":20,"Motorcycle":36,"Person":13,"Others":0}
+      // ];
+      //console.log(jsonData);
+      var gglData = [];
+      if (jsonData.length > 0) {
+        // load column headings
+        var colHead = [];
+        Object.keys(jsonData[0]).forEach(function (key) {
+
+
+
+          colHead.push(key);
+        });
+        gglData.push(colHead);
+
+        // load data rows
+        jsonData.forEach(function (row) {
+          var gglRow = [];
+          Object.keys(row).forEach(function (key) {
+            gglRow.push(row[key]);
+          });
+          gglData.push(gglRow);
+        });
+      }
+
+
+      //drawSeriesChart(gglData);
+      //  arrayToDataTable is a static method, "new" keyword not needed
+
+      console.log(gglData);
+      var data = google.visualization.arrayToDataTable(gglData);
+      var table = new google.visualization.Table(document.getElementById('table_div'));
+      table.draw(data);
+    }
 
     function drawVisualization(data2) {
 
       var data = google.visualization.arrayToDataTable(data2);
-        // Some raw data (not necessarily accurate)
+      // Some raw data (not necessarily accurate)
       //   var data = google.visualization.arrayToDataTable([
       //    ['Month', 'Bolivia', 'Ecuador', 'Madagascar', 'Papua New Guinea', 'Rwanda', 'Average'],
       //    ['2004/05',  165,      938,         522,             998,           450,      614.6],
@@ -180,40 +180,42 @@ function drawChart(jsonData) {
       //    ['2008/09',  136,      691,         629,             1026,          366,      569.6]
       // ]);
 
-    // var options = {
-    //   title : 'Sentiment Analysis Per Ticket',
-    //   vAxis: {title: 'Sentiment Score'},
-    //   hAxis: {title: 'Date ticket raised'},
-    //   seriesType: 'bars',
-    //   series: {8: {type: 'line'}}
-    // };
+      // var options = {
+      //   title : 'Sentiment Analysis Per Ticket',
+      //   vAxis: {title: 'Sentiment Score'},
+      //   hAxis: {title: 'Date ticket raised'},
+      //   seriesType: 'bars',
+      //   series: {8: {type: 'line'}}
+      // };
 
 
-  var options = {
-    vAxis: {title: 'Sentiment Score'},
-      hAxis: {title: 'Date ticket raised'},
-          title: 'Sentiment Analysis Per Ticket',
-          curveType: 'function',
-          legend: { position: 'right' }
-        };
-    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-    chart.draw(data, options);
-  }
-    </script>
-  </head>
-  <body>
+      var options = {
+        vAxis: { title: 'Sentiment Score' },
+        hAxis: { title: 'Date ticket raised' },
+        title: 'Sentiment Analysis Per Ticket',
+        curveType: 'function',
+        legend: { position: 'right' }
+      };
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+  </script>
+</head>
 
-      <nav>
-      
-          <a href="/">HOME</a> |
-          <a href="/">Word counting</a> |
-          <a href="/wordcloud.html">WordCloud</a> |
-          <a href="/tfidf.html">TFIDF</a> |
-          <a href="/tfidfcloud.html">TFIDFCLOUD</a> |
-          <a href="/sentiment.html">Sentiment</a> |
-         
-        </nav>
+<body>
+
+  <nav>
+
+    <a href="/">HOME</a> |
+    <a href="/">Word counting</a> |
+    <a href="/wordcloud.html">WordCloud</a> |
+    <a href="/tfidf.html">TFIDF</a> |
+    <a href="/tfidfcloud.html">TFIDFCLOUD</a> |
+    <a href="/sentiment.html">Sentiment</a> |
+    <a href="/nlp.html">NLP</a>
+  </nav>
   <!--   <div id="series_chart_div" style="width: 900px; height: 500px;"></div> -->
   <div id="chart_div" style="width: 100%; height: 100%;"></div>
-  </body>
+</body>
+
 </html>
