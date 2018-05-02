@@ -80,12 +80,17 @@
 <script>
 
         function filterStopWords(text){
+                var output= '';
+                var textarray = text.split("\\s+");
            var stop = $.trim($("#stopwords").val()).split(',');
              
-                for(var i = 0 ; i < stop.length ; i++){
-                  text =  text.replace(stop[i], "");  
+                for(var i = 0 ; i < textarray.length ; i++){
+                        
+                        if(stop.indexOf(textarray[i]) > -1){
+                 output = output+textarray[i]+' ';
+                        }
                 }
-             return text;
+             return output;
 
                 
         }
