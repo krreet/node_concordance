@@ -86,7 +86,7 @@
              
                 for(var i = 0 ; i < textarray.length ; i++){
                         
-                        if(stop.indexOf(textarray[i]) > -1){
+                        if(!(stop.indexOf(textarray[i]) > -1)){
                  output = output+textarray[i]+' ';
                         }
                 }
