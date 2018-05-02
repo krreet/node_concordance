@@ -82,7 +82,7 @@
         function filterStopWords(text){
                 var output= '';
                 var textarray = text.split("\\s+");
-           var stop = $.trim($("#stopwords").val()).split(',');
+           var stop = $.trim($("#stopwords").val()).split(/\W+/);
              
                 for(var i = 0 ; i < textarray.length ; i++){
                         
